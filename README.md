@@ -1,12 +1,65 @@
 Padavan-build说明  https://github.com/chongshengB/Padavan-build
+
 现在不需要新建Release了，已经更改了脚本，直接fork，修改好之后，点击右上角的 Star 星星按钮即可开始自动编译（自己点击才会编译）。
+
 Padavan-build说明 步骤
+
 0.点击右上角的Fork按钮，进入自己fork后的仓库。
+
 1.修改/workflows/build-padavan.yml里的插件与机型。修改TNAME: K2P 中的K2P为需要编译的型号，注意名称要与configs/templates/目录下的名字 相同。 修改后commit changes保存。
+
 2.点击页面上部的Actions按钮，点击I understand my workflows，go ahead and enable them绿色按钮启用action。
+
 3.点击右上角的 Star 星星按钮即可开始自动编译（自己点击才会编译）。修改配置后若需再次编译，先点击Star取消Star后，再点击Star即可重新编译。 编译完成后在Actions页面底部下载固件。
 
 
+
+
+
+**English** | [中文](https://p3terx.com/archives/build-openwrt-with-github-actions.html)
+
+# Actions-OpenWrt
+
+[![LICENSE](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square&label=LICENSE)](https://github.com/P3TERX/Actions-OpenWrt/blob/master/LICENSE)
+![GitHub Stars](https://img.shields.io/github/stars/P3TERX/Actions-OpenWrt.svg?style=flat-square&label=Stars&logo=github)
+![GitHub Forks](https://img.shields.io/github/forks/P3TERX/Actions-OpenWrt.svg?style=flat-square&label=Forks&logo=github)
+
+A template for building OpenWrt with GitHub Actions
+
+## Usage
+
+- Click the [Use this template](https://github.com/P3TERX/Actions-OpenWrt/generate) button to create a new repository.
+- Generate `.config` files using [Lean's OpenWrt](https://github.com/coolsnowwolf/lede) source code. ( You can change it through environment variables in the workflow file. )
+- Push `.config` file to the GitHub repository.
+- Select `Build OpenWrt` on the Actions page.
+- Click the `Run workflow` button.
+- When the build is complete, click the `Artifacts` button in the upper right corner of the Actions page to download the binaries.
+
+## Tips
+
+- It may take a long time to create a `.config` file and build the OpenWrt firmware. Thus, before create repository to build your own firmware, you may check out if others have already built it which meet your needs by simply [search `Actions-Openwrt` in GitHub](https://github.com/search?q=Actions-openwrt).
+- Add some meta info of your built firmware (such as firmware architecture and installed packages) to your repository introduction, this will save others' time.
+
+## Credits
+
+- [Microsoft Azure](https://azure.microsoft.com)
+- [GitHub Actions](https://github.com/features/actions)
+- [OpenWrt](https://github.com/openwrt/openwrt)
+- [Lean's OpenWrt](https://github.com/coolsnowwolf/lede)
+- [tmate](https://github.com/tmate-io/tmate)
+- [mxschmitt/action-tmate](https://github.com/mxschmitt/action-tmate)
+- [csexton/debugger-action](https://github.com/csexton/debugger-action)
+- [Cowtransfer](https://cowtransfer.com)
+- [WeTransfer](https://wetransfer.com/)
+- [Mikubill/transfer](https://github.com/Mikubill/transfer)
+- [softprops/action-gh-release](https://github.com/softprops/action-gh-release)
+- [ActionsRML/delete-workflow-runs](https://github.com/ActionsRML/delete-workflow-runs)
+- [dev-drprasad/delete-older-releases](https://github.com/dev-drprasad/delete-older-releases)
+- [peter-evans/repository-dispatch](https://github.com/peter-evans/repository-dispatch)
+
+## License
+
+[MIT](https://github.com/P3TERX/Actions-OpenWrt/blob/main/LICENSE) © [**P3TERX**](https://p3terx.com)
 
 前言
 Github Ac­tions 是 Mi­crosoft 收购 GitHub 后推出的 CI/​CD 服务，它提供了性能配置非常不错的虚拟服务器环境（E5 2vCPU/​7G RAM），基于它可以进行构建、测试、打包、部署项目。对于公开仓库可免费无时间限制的使用，且单次使用时间长达 6 个小时，这对于编译 Open­Wrt 来说是非常充足的。不过 GitHub Ac­tions 有一定的使用门槛，首先要了解如何编写 workflow 文件。不过不用担心，博主已经编写好了相关的 work­flow 文件模版，只需要按照教程的步骤来操作即可。
@@ -72,10 +125,48 @@ TIPS: 如需 ipk 文件可以在进阶使用章节找到方法。因为大多数
 进阶使用
 自定义环境变量与功能
 点击查看
+打开 work­flow 文件（.github/workflows/build-openwrt.yml），你会看到有如下一些环境变量，可按照自己的需求对这些变量进行定义。
+
+env:
+  REPO_URL: https://github.com/coolsnowwolf/lede
+  REPO_BRANCH: master
+  FEEDS_CONF: feeds.conf.default
+  CONFIG_FILE: .config
+  DIY_P1_SH: diy-part1.sh
+  DIY_P2_SH: diy-part2.sh
+  UPLOAD_BIN_DIR: false
+  UPLOAD_FIRMWARE: true
+  UPLOAD_COWTRANSFER: false
+  UPLOAD_WETRANSFER: false
+  UPLOAD_RELEASE: false
+  TZ: Asia/Shanghai
+TIPS: 修改时需要注意:(冒号)后面有空格。
+环境变量	功能
+REPO_URL	源码仓库地址
+REPO_BRANCH	源码分支
+FEEDS_CONF	自定义feeds.conf.default文件名
+CONFIG_FILE	自定义.config文件名
+DIY_P1_SH	自定义diy-part1.sh文件名
+DIY_P2_SH	自定义diy-part2.sh文件名
+UPLOAD_BIN_DIR	上传 bin 目录。即包含所有 ipk 文件和固件的目录。默认false
+UPLOAD_FIRMWARE	上传固件目录。默认true
+UPLOAD_COWTRANSFER	上传固件到奶牛快传。默认false
+UPLOAD_WERANSFER	上传固件到 WeTransfer 。默认false
+UPLOAD_RELEASE	上传固件到 releases 。默认false
+TZ	时区设置
 DIY 脚本
 点击查看
+仓库根目录目前有两个 DIY 脚本：diy-part1.sh 和 diy-part2.sh，它们分别在更新与安装 feeds 的前后执行，你可以把对源码修改的指令写到脚本中，比如修改默认 IP、主机名、主题、添加 / 删除软件包等操作。但不仅限于这些操作，发挥你强大的想象力，可做出更强大的功能。
+
+TIPS: 脚本工作目录在源码目录，内附几个简单的例子供参考。
 添加额外的软件包
 点击查看
+在 DIY 脚本中加入对指定软件包源码的远程仓库的克隆指令。就像下面这样：
+git clone https://github.com/P3TERX/xxx package/xxx
+本地make menuconfig生成.config文件时添加相应的软件包，如果你知道包名可以直接写到.config文件中。
+TIPS: 如果额外添加的软件包与 Open­Wrt 源码中已有的软件包同名的情况，则需要把 Open­Wrt 源码中的同名软件包删除，否则会优先编译 Open­Wrt 中的软件包。这同样可以利用到的 DIY 脚本，相关指令应写在diy-part2.sh。
+原理是把软件包源码放到 package 目录下，编译时会自动遍历，与本地编译是一样的。当然方法不止一种，其它方式请自行探索。
+
 自定义 feeds 配置文件
 把 feeds.conf.default 文件放入仓库根目录即可，它会覆盖 Open­Wrt 源码目录下的相关文件。
 
@@ -86,10 +177,29 @@ Custom files（自定义文件）
 默认引用的是 Lean 的源码，如果你有编译其它源码的需求可以进行替换。
 
 点击查看
+编辑 work­flow 文件（.github/workflows/build-openwrt.yml），修改下面的相关环境变量字段。
+
+REPO_URL: https://github.com/coolsnowwolf/lede
+REPO_BRANCH: master
+比如修改为 Open­Wrt 官方源码 19.07 分支
+
+REPO_URL: https://github.com/openwrt/openwrt
+REPO_BRANCH: openwrt-19.07
+TIPS: 注意冒号后面有空格
 源码更新自动编译
 在检测到源码更新后自动进行编译。
 
 点击查看
+创建 Personal access token(PAT) ，勾选repo权限，这将用于自动触发编译工作流程。
+
+然后点击自己仓库的Settings选项卡，再点击Secrets。添加名为ACTIONS_TRIGGER_PAT的加密环境变量，保存刚刚创建的 PAT 。
+
+在 Actions 页面选择Update Checker，点击Run workflow手动进行一次测试运行。如果没有报错且 OpenWrt 编译工作流程被触发，则代表测试通过。
+最后编辑Update Checker的 workflow 文件（.github/workflows/update-checker.yml），取消注释（删除#）定时触发相关的部分。这里可以根据 cron 格式来设定检测的时间，时区为 UTC 。
+#  schedule:
+#    - cron: 0 */18 * * *
+此外还可以根据实际情况对监视的源码仓库进行更改，如果有多个源码仓库需要监视则多复制几份相应的 work­flow 文件。
+
 编译多个固件
 多 repository 方案
 通过 P3TERX/Actions-OpenWrt 项目创建多个仓库来编译不同架构机型的 Open­Wrt 固件。
@@ -98,6 +208,19 @@ Custom files（自定义文件）
 基于 GitHub Ac­tions 可同时运行多个工作流程的特性，最多可以同时进行至少 20 个编译任务。也可以单独选择其中一个进行编译，这充分的利用到了 GitHub Ac­tions 为每个账户免费提供的 20 个 Ubuntu 虚拟服务器环境。
 
 点击查看
+假设有三台路由器的固件需要编译，比如 K2P、x86_64 软路由、新路由 3。
+
+生成它们的.config文件
+分别将它们重命名为k2p.config、x64.config、d2.config放入本地仓库根目录。
+复制多个 workflow 文件（.github/workflows/build-openwrt.yml）。为了更好的区分可以对它进行重命名，比如k2p.yml、x64.yml、d2.yml。此外第一行name字段也可以进行相应的修改。
+然后分别用上面修改的文件名替换对应 workflow 文件中下面两个位置的.config，不同的机型同样可以使用不同的 DIY 脚本。
+...
+    paths:
+      - '.config'
+...
+        CONFIG_FILE: '.config'
+        DIY_SH: 'diy.sh'
+...
 SSH 连接到 Actions
 通过 tmate 连接到 GitHub Ac­tions 虚拟服务器环境，可直接进行 make menuconfig 操作生成编译配置，或者任意的客制化操作。也就是说，你不需要再自己搭建编译环境了。这可能改变之前所有使用 GitHub Ac­tions 的编译 Open­Wrt 方式。
 
@@ -106,20 +229,53 @@ SSH 连接到 Actions
 奶牛快传是中国大陆的一款临时文件传输分享服务网盘，特点是不限速。因国情所致，中国大陆地区 GitHub 访问速度缓慢，有些小伙伴可能无法正常下载固件，上传固件到奶牛快传是个非常好的选择。
 
 点击查看
+编辑 workflow 文件（.github/workflows/build-openwrt.yml），将环境变量UPLOAD_COWTRANSFER的值修改为true：
+UPLOAD_COWTRANSFER: true
+编译完成后你可以在相关的 workflow 页面或者Upload firmware to cowtransfer步骤的日志中找到下载链接。
+CLI 上传工具来自 Mikubill/transfer ，特此感谢。
 上传固件到 WeTransfer
 WeTransfer 是荷兰的一款临时文件传输分享服务网盘，前面提到的奶牛快传实际上师从自它，二者的网站都非常相似。We­Trans­fer 使用的是 Ama­zon S3 存储并通过 Ama­zon Cloud­Front CDN 全球加速，它在中国大陆的下载体验完全不输奶牛快传，甚至某些情况下要更好。
 
 点击查看
+编辑 workflow 文件（.github/workflows/build-openwrt.yml），将环境变量UPLOAD_WERANSFER的值修改为true：
+UPLOAD_WERANSFER: true
+编译完成后你可以在相关的 workflow 页面或者Upload firmware to WeTransfer步骤的日志中找到下载链接。
+CLI 上传工具来自 Mikubill/transfer ，特此感谢。
 上传固件到 Releases 页面
 GitHub 的 Re­leases 页面通常用于发布打包好的二进制文件，无需登录即可下载。Ar­ti­facts 和网盘有保存期限，Re­leases 则是永久保存的。
 
 点击查看
+编辑 work­flow 文件（.github/workflows/build-openwrt.yml），将环境变量 UPLOAD_WERANSFER 的值修改为 true：
+
+UPLOAD_RELEASE: true
+编译完成后你可以在 re­leases 页面找到下载链接。
+
+TIPS: 为了不给 GitHub 服务器带来负担，默认保留 3 个历史记录。
 定时自动编译（已弃用）
 点击查看
+TIPS: 源码更新是不确定的，定时编译经常是在编译没有变动的源码，无意义且浪费资源，所以不建议使用。
+编辑 work­flow 文件（.github/workflows/build-openwrt.yml）取消注释下面两行。
+
+#  schedule:
+#    - cron: 0 8 * * 5
+例子是北京时间每周五下午 4 点（16 时）开始编译（周末下班回家直接下载最新固件开始折腾）。如需自定义则按照 cron 格式修改即可，GitHub Ac­tions 的时区为 UTC ，注意按照自己所在地时区进行转换。
+
 点击 star 开始编译（已弃用）
 点击查看
+点击自己仓库页面上的 Star 按钮开始编译，为了防止产生垃圾记录，所以这个功能默认没有开启。
+
+编辑 work­flow 文件（.github/workflows/build-openwrt.yml）取消注释下面两行，后续点击自己仓库上的 star 即可开始编译。
+
+#  watch:
+#    types: started
+TIPS: 字段started并不是“开始了”的意思，而是“已经点击 Star”。
+吐槽: 官方并没有提供一个开始按钮，通过搜索找到过很多奇怪的一键触发方式，但都是通过 Web­hook 来实现的。机智的我发现了可以通过点击 Star 来触发，这样就相当于把 Star 当成开始按钮。这个started有种一句双关的意思了。
 macOS 虚拟机编译方案（已弃用）
 点击查看
+GitHub Ac­tions 的 ma­cOS 虚拟机性能要高于 Ubuntu 虚拟机，所以使用它编译 Open­Wrt 理论上速度会更快。博主经过几天时间的研究已经总结出了 macOS 下的 OpenWrt 编译环境的搭建方法，并编写出了适用于 ma­cOS 虚拟环境的 Open­Wrt 编译方案的 work­flow 文件。
+
+由于极少有开发者会考虑兼容 ma­cOS 下的规范，所以使用 ma­cOS 编译 Open­Wrt 不可避免的会遇到非常多的问题，甚至 Open­Wrt 官方源码也是。而且后续测试发现 ma­cOS 虚拟机性能已大幅下降，故相关 work­flow 文件已经移除。也不建议任何人使用 ma­cOS 编译 Open­Wrt 。
+
 写在最后
 博主只是提供基本入门用法和思路，更高阶的玩法还需要小伙伴们自己去发觉。此外希望大家合理使用免费的服务器资源，必要时再编译。让出更多的服务器资源让开发者来充分利用才能产生更多更好的软件，这样大家才能受益。最后感谢 Mi­crosoft 为我们免费提供 GitHub Ac­tions 这样强大的服务。
 
@@ -137,47 +293,3 @@ macOS 虚拟机编译方案（已弃用）
 
 
 
-**English** | [中文](https://p3terx.com/archives/build-openwrt-with-github-actions.html)
-
-# Actions-OpenWrt
-
-[![LICENSE](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square&label=LICENSE)](https://github.com/P3TERX/Actions-OpenWrt/blob/master/LICENSE)
-![GitHub Stars](https://img.shields.io/github/stars/P3TERX/Actions-OpenWrt.svg?style=flat-square&label=Stars&logo=github)
-![GitHub Forks](https://img.shields.io/github/forks/P3TERX/Actions-OpenWrt.svg?style=flat-square&label=Forks&logo=github)
-
-A template for building OpenWrt with GitHub Actions
-
-## Usage
-
-- Click the [Use this template](https://github.com/P3TERX/Actions-OpenWrt/generate) button to create a new repository.
-- Generate `.config` files using [Lean's OpenWrt](https://github.com/coolsnowwolf/lede) source code. ( You can change it through environment variables in the workflow file. )
-- Push `.config` file to the GitHub repository.
-- Select `Build OpenWrt` on the Actions page.
-- Click the `Run workflow` button.
-- When the build is complete, click the `Artifacts` button in the upper right corner of the Actions page to download the binaries.
-
-## Tips
-
-- It may take a long time to create a `.config` file and build the OpenWrt firmware. Thus, before create repository to build your own firmware, you may check out if others have already built it which meet your needs by simply [search `Actions-Openwrt` in GitHub](https://github.com/search?q=Actions-openwrt).
-- Add some meta info of your built firmware (such as firmware architecture and installed packages) to your repository introduction, this will save others' time.
-
-## Credits
-
-- [Microsoft Azure](https://azure.microsoft.com)
-- [GitHub Actions](https://github.com/features/actions)
-- [OpenWrt](https://github.com/openwrt/openwrt)
-- [Lean's OpenWrt](https://github.com/coolsnowwolf/lede)
-- [tmate](https://github.com/tmate-io/tmate)
-- [mxschmitt/action-tmate](https://github.com/mxschmitt/action-tmate)
-- [csexton/debugger-action](https://github.com/csexton/debugger-action)
-- [Cowtransfer](https://cowtransfer.com)
-- [WeTransfer](https://wetransfer.com/)
-- [Mikubill/transfer](https://github.com/Mikubill/transfer)
-- [softprops/action-gh-release](https://github.com/softprops/action-gh-release)
-- [ActionsRML/delete-workflow-runs](https://github.com/ActionsRML/delete-workflow-runs)
-- [dev-drprasad/delete-older-releases](https://github.com/dev-drprasad/delete-older-releases)
-- [peter-evans/repository-dispatch](https://github.com/peter-evans/repository-dispatch)
-
-## License
-
-[MIT](https://github.com/P3TERX/Actions-OpenWrt/blob/main/LICENSE) © [**P3TERX**](https://p3terx.com)
