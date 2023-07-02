@@ -7,6 +7,8 @@
 name: Build_Padavan_chongshengB
 
 on: 
+  repository_dispatch:
+  workflow_dispatch:
   release:
     types: [published]
   push:
@@ -16,8 +18,8 @@ on:
   #    - master
 #  schedule:
 #    - cron: 0 8 * * 5
-  #watch:
-  #  types: [started]
+#  watch:
+#   types: [started]
 
 jobs:
   build:
