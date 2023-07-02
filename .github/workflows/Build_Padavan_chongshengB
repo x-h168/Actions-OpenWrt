@@ -1,10 +1,18 @@
-#Padavan-build说明  https://github.com/chongshengB/Padavan-build
-#现在不需要新建Release了，已经更改了脚本，直接fork，修改好之后，点击右上角的 Star 星星按钮即可开始自动编译（自己点击才会编译）-已取消。
-#修改TNAME: K2P 中的K2P为你需要编译的型号，注意名称要与configs/templates/目录下的名字相同
+
+
 #
+# Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
+#
+# This is free software, licensed under the MIT License.
+# See /LICENSE for more information.
+#
+# https://github.com/P3TERX/Actions-OpenWrt
+# Description: Build OpenWrt using GitHub Actions
 #
 
-name: Build_Padavan_chongshengB
+name: Build_OpenWrt_P3TERxxxX
+
+
 
 on: 
   release:
